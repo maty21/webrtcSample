@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mondial
+  labels:
+    app: mondial
+    scale-group: mondial
+    group: hkube
+    stam: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mondial
+  template:
+    metadata:
+      labels:
+        app: mondial
+        group: hkube
+    spec:
+      nodeSelector:
+        core: "true"
+      containers:
+        - name: mondial
+          image: 'hkube/mondial${TAG}'
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: storage
+              mountPath: /mondial/data
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: mondial-nfs-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mondial
+  labels:
+    app: mondial
+    group: hkube
+    stam: "true"
+spec:
+  selector:
+    app: mondial
+  ports:
+    - name: metrics
+      port: 3001
+      targetPort: 3001
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-mondial
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  labels:
+    group: hkube
+    app: reverse-proxy
+    thirdparty: "true"
+spec:
+  # tls:
+  # # This assumes tls-secret exists.
+  # - secretName: tls-secret
+  rules:
+    # - http:
+    #     paths:
+    #       - path: /
+    #         backend:
+    #           serviceName: mondial
+    #           servicePort: 3001
+    - host: mondial.hkube.io
+      http:
+        paths:
+          - backend:
+              serviceName: mondial
+              servicePort: 3001            
+        

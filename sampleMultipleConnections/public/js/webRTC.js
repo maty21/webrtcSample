@@ -4,6 +4,8 @@ const offerOptions = {
     offerToReceiveVideo: 1
 };
 let viewers = 0;
+const viewersDetails = [];
+const MAX = 20;
 const socket = io(`${window.location.origin}`);
 socket.on('connect', () => console.log('connected'))
 const ICE_config = {
@@ -42,9 +44,26 @@ export const caller = async (videoSrc) => {
     socket.on('socketAnswer:received', rmDsec => peerConnection.setRemoteDescription(rmDsec));
 }
 
+const viewerCounter = pc => {
+     viewers++;
+    if (viewers > MAX) {
+        let viewerPlace = viewers % MAX;
+        viewersDetails[viewerPlace].pc.close();
+        viewersDetails[viewerPlace].pc = pc;
+        return viewersDetails[viewerPlace].element
+        //viewersDetails.push({element,pc}) 
+    } else {
+        const element = createVideoElement();
+        viewersDetails.push({ element, pc });
+        return element;
+    }
+
+
+}
+
 
 export const createVideoElement = () => {
-    viewers++;
+   
     const videoContainer = document.getElementById('videoContainer');
     const videoElement = document.createElement('video');
     videoElement.id = viewers;
@@ -59,17 +78,13 @@ export const callee = async (video) => {
     //  const _videoSrc = videoSrc;
     socket.on('createOffer:received', async sdp => {
         let peerConnection = null;
-        const videoSrc = createVideoElement();
+        //  const videoSrc = createVideoElement();
         peerConnection = new RTCPeerConnection(ICE_config);
+        const videoSrc = viewerCounter(peerConnection);
         socket.on('callerCandidate:received', async candidate => peerConnection.addIceCandidate(candidate))
         peerConnection.onicecandidate = c => c.candidate && socket.emit('calleeCandidate:send', c.candidate)
         peerConnection.ontrack = stream => {
-
-            //   setTimeout(()=>{
             videoSrc.srcObject = stream.streams[0];
-            //            videoSrc.play()
-            //    video.srcObject = stream.streams[0]    
-            //       },1000)
 
         }
         peerConnection.setRemoteDescription(sdp);

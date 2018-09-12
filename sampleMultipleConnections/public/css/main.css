@@ -10,8 +10,14 @@ button {
   width: 83px;
 
 }
-
-#qrCode {margin-top: -80PX;/* MARGIN-RIGHT: 0%; */}
+#title-conatiner{
+  display: flex;
+  font-size: 50px;
+}
+#url{
+  margin-left: 450px;
+}
+#qrCode {margin-top: -80px;margin-bottom: 20px;}
 
 #title {color:rgb(35, 186, 224);margin: 40%;}
 #titleCaller {color:rgb(35, 186, 224);margin: 20%;}

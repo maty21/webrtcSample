@@ -9,4 +9,4 @@ const calleeButton = document.getElementById('calleeButton');
 
 
 
-callee(remoteVideo)
+callee(localVideo)

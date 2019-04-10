@@ -31,12 +31,13 @@ const ICE_config = {
         }
     ]
 }
-export const caller = async (videoSrc) => {
+export const caller = async (videoSrc, remoteVideo) => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     videoSrc.srcObject = stream;
     let peerConnection = new RTCPeerConnection(ICE_config);
     peerConnection.onicecandidate = c => c.candidate && socket.emit('callerCandidate:send', c.candidate)
     stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+    peerConnection.ontrack = event => remoteVideo.srcObject = event.streams[0];
     const sdp = await peerConnection.createOffer({ offerToReceiveAudio: 1, offerToReceiveVideo: 1 });
     const res = await peerConnection.setLocalDescription(sdp);
     socket.emit('createOffer:send', sdp)
@@ -45,7 +46,7 @@ export const caller = async (videoSrc) => {
 }
 
 const viewerCounter = pc => {
-     viewers++;
+    viewers++;
     if (viewers > MAX) {
         let viewerPlace = viewers % MAX;
         viewersDetails[viewerPlace].pc.close();
@@ -63,7 +64,7 @@ const viewerCounter = pc => {
 
 
 export const createVideoElement = () => {
-   
+
     const videoContainer = document.getElementById('videoContainer');
     const videoElement = document.createElement('video');
     videoElement.id = viewers;
@@ -78,8 +79,10 @@ export const callee = async (video) => {
     //  const _videoSrc = videoSrc;
     socket.on('createOffer:received', async sdp => {
         let peerConnection = null;
-        //  const videoSrc = createVideoElement();
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        video.srcObject = stream;
         peerConnection = new RTCPeerConnection(ICE_config);
+        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
         const videoSrc = viewerCounter(peerConnection);
         socket.on('callerCandidate:received', async candidate => peerConnection.addIceCandidate(candidate))
         peerConnection.onicecandidate = c => c.candidate && socket.emit('calleeCandidate:send', c.candidate)

@@ -5,8 +5,8 @@ const callerButton = document.getElementById('callerButton');
 const calleeButton = document.getElementById('calleeButton');
 callerButton.onclick = () => {
     console.log('bla')
-    caller(localVideo)
-    callerButton.style.display  = "none"
+    caller(localVideo, remoteVideo)
+    callerButton.style.display = "none"
 };
 
 

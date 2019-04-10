@@ -7,6 +7,7 @@
  *  tree.
 -->
 <html>
+
 <head>
 
     <meta charset="utf-8">
@@ -24,39 +25,41 @@
 
     <link rel="icon" sizes="192x192" href="../../../images/webrtc-icon-192x192.png">
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="../../../css/main.css"/>
-    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="../../../css/main.css" />
+    <link rel="stylesheet" href="css/main.css" />
 
 </head>
 
 <body>
 
-<div id="container">
+    <div id="container">
 
-    <div class="highlight">
-       
+        <div class="highlight">
 
-    <h1>
-        <span id="titleCaller">WEBRTC JS Israel </span>
-    </h1>
-<!-- 
+
+            <h1>
+                <span id="titleCaller">WEBRTC JS Israel </span>
+            </h1>
+            <!-- 
     <video id="localVideo" playsinline autoplay muted></video>
     <video id="remoteVideo" playsinline autoplay></video> -->
 
-    <!-- <div>
+            <!-- <div>
         <button  class="startButtonc" id="calleeButton">Start</button> -->
-        
-        <!-- <button id="hangupButton">Hang Up</button>
+
+            <!-- <button id="hangupButton">Hang Up</button>
     </div> -->
 
 
-<video id="localVideo" playsinline autoplay muted></video>
-<button id="callerButton">Call</button>
+            <video id="localVideo" playsinline autoplay muted></video>
+            <video id="remoteVideo" playsinline autoplay muted></video>
+            <button id="callerButton">Call</button>
 
-<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<script src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-<script type="module" src="js/caller.js" async></script>
-<!-- <script type="module" src="js/webRTC.js" ></script> -->
+            <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+            <script type="module" src="js/caller.js" async></script>
+            <!-- <script type="module" src="js/webRTC.js" ></script> -->
 
 </body>
+
 </html>
